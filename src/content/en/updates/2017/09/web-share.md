@@ -59,7 +59,8 @@ In 2016, we used the Web Share API on Android via an
 API was a perfect fit for mobile—in previous years, we had disabled share buttons on mobile,
 as space is at a premimum and we couldn't justify having several share targets.
 
-<img alt="Santa Tracker share button" src="/web/updates/images/2017/09/santa-phone.png" style="margin: 12px auto;"/>
+<img alt="Santa Tracker share button" src="/web/updates/images/2017/09/santa-phone.png"
+  style="margin: 12px auto;"/>
 
 With the Web Share API, we were able to present just one button, saving precious
 pixels. We also found that users shared with Web Share around 20% more than users
