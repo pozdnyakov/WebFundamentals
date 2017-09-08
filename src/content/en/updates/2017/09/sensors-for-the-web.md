@@ -21,15 +21,16 @@ API](https://www.w3.org/TR/generic-sensor/), FTW!
 
 ## What is Generic Sensor API? {: #what-is-generic-sensor-api }
 
-The [Generic Sensor API](https://www.w3.org/TR/generic-sensor/) is a framework
-that provides consistent interfaces for sensor devices exposed to the web
-platform, simplifies implementation and specification process for the new
-sensors. It consists of the base [Sensor](https://w3c.github.io/sensors/#the-sensor-interface)
-interface and a set of concrete sensor classes. Look for example at the
-[Gyroscope](https://w3c.github.io/gyroscope/#gyroscope-interface) interface,
-it is really tiny! The core functionality is specified by the base interface,
-and Gyroscope merely extends it with three attributes representing angular
-velocity.
+The [Generic Sensor API](https://www.w3.org/TR/generic-sensor/) is a set of
+interfaces which expose sensor devices to the web platform. The API consists
+of the base [Sensor](https://w3c.github.io/sensors/#the-sensor-interface)
+interface and a set of concrete sensor classes build on top. Having a base
+interface simplifies the implementation and specification process for the
+concrete sensor classes. For instance take a look at the
+[Gyroscope](https://w3c.github.io/gyroscope/#gyroscope-interface)
+class, it is really tiny! The core functionality is specified by the base
+interface, and Gyroscope merely extends it with three attributes representing
+angular velocity.
 
 Typically a concrete sensor class represents an actual sensor on the platform
 e.g., accelerometer or gyroscope. However, in some cases, implementation of a
@@ -40,7 +41,7 @@ For example,
 sensor provides ready-to-use 4x4 rotation matrix based on the data obtained
 from accelerometer, gyroscope and magnetometer.
 
-You might think that the Web platform already provides sensor data and you are
+You might think that the web platform already provides sensor data and you are
 absolutely right! For instance, [DeviceMotion](https://www.w3.org/TR/2016/CR-orientation-event-20160818/#devicemotion)
 and [DeviceOrientatrion](https://www.w3.org/TR/2016/CR-orientation-event-20160818/#deviceorientation)
 events expose motion sensor data, while other experimental APIs provide data
@@ -52,17 +53,18 @@ number of advantages:
 - Generic Sensor API is a framework, i.e. it can be easily extended
   with new sensor classes and each of these classes will keep the generic
   interface. The client code initially written for one sensor type can be
-  reused for another with very little modifications!
+  reused for another with very few modifications!
 - You can configure the desired sensor data. For example, request sensor reading
-  delivery rate suitable for your application.
-- You can detect whether sensor is available on the platform.
+  delivery rate suitable for your application needs.
+- You can detect whether a sensor is available on the platform.
 - Sensor readings have high precision timestamps, enabling better
-  synchronization with other activities in your applicaion.
+  synchronization with other activities in your application.
 - Sensor data models and coordinate systems are clearly defined, allowing
   browser vendors to implement interoperable solutions.
-- The Generic Sensor based interfaces are not bound to DOM (neither navigator
-  nor window objects), and it opens up new opportunities of using same API from
-  service workers or implementing Generic Sensor API in headless JS runtimes.
+- The Generic Sensor based interfaces are not bound to the DOM (neither
+  navigator nor window objects), and it opens up future opportunities of using
+  same API from service workers or implementing Generic Sensor API in headless
+  JS runtimes.
 - [Security and privacy](#privacy_and_security) aspects are the top priority
   for the Generic Sensor API and provide much better security level compared to
   older sensor APIs. There is integration with Permissions API.
@@ -84,7 +86,7 @@ At the time of writing, Chrome supports several sensors that you can experiment 
 - AmbientLightSensor
 - Magnetometer
 
-You can enable Generic Sensor APIs for development purposes by turning a
+You can enable Generic Sensor APIs for development purposes by turning on a
 feature flag. Go to [chrome://flags/#enable-generic-sensor](chrome://flags/#enable-generic-sensor)
 to enable motion sensors or
 [chrome://flags/#enable-generic-sensor-extra-classes](chrome://flags/#enable-generic-sensor-extra-classes)
@@ -98,7 +100,7 @@ to enable environmental sensors. Restart Chrome and you should be good to go.
 More information on browser implementation status can be found on
 [chromestatus.com](https://www.chromestatus.com/features/5698781827825664?embed)
 
-## Motion sensors available for Origin Trials {: #motion-sensors-origin-trials }
+## Motion sensors are available as an origin trial {: #motion-sensors-origin-trials }
 
 In order to get your valuable feedback, the Generic Sensor API would be
 available in Chrome 62 as an [origin trial](https://bit.ly/OriginTrials). You
@@ -196,42 +198,42 @@ Here are few snippets:
 
 **three.js**
 
-    var torus_geometry = new THREE.TorusGeometry(7, 1.6, 4, 3, 6.3);
-    var material = new THREE.MeshBasicMaterial({ color: 0x0071C5 });
-    var torus = new THREE.Mesh(torus_geometry, material);
+    let torusGeometry = new THREE.TorusGeometry(7, 1.6, 4, 3, 6.3);
+    let material = new THREE.MeshBasicMaterial({ color: 0x0071C5 });
+    let torus = new THREE.Mesh(torusGeometry, material);
     scene.add(torus);
 
     // Update mech rotation using quaternion.
-    var sensor_abs = new AbsoluteOrientationSensor();
-    sensor_abs.onreading = () => torus.quaternion.fromArray(sensor_abs.quaternion);
-    sensor_abs.start();
+    const sensorAbs = new AbsoluteOrientationSensor();
+    sensorAbs.onreading = () => torus.quaternion.fromArray(sensorAbs.quaternion);
+    sensorAbs.start();
 
     // Update mech rotation using rotation matrix.
-    var sensor_rel = new RelativeOrientationSensor();
-    Float32Array rotationMatrix = new Float32Array(16);
+    const sensorRel = new RelativeOrientationSensor();
+    let rotationMatrix = new Float32Array(16);
     sensor_rel.onreading = () => {
-        sensor_rel.populateMatrix(rotationMatrix);
+        sensorRel.populateMatrix(rotationMatrix);
         torus.matrix.fromArray(rotationMatrix);
     }
-    sensor_rel.start();
+    sensorRel.start();
 
 **BABYLON**
 
-    var cylinder = new BABYLON.Mesh.CreateCylinder("cylinder", 0.9, 0.3, 0.6, 9, 1 , scene);
-    var sensor_rel = new RelativeOrientationSensor({frequency: 30});
-    sensor_rel.onreading = () => cylinder.rotationQuaternion.FromArray(sensor_rel.quaternion);
-    sensor_rel.start();
+    const cylinder = new BABYLON.Mesh.CreateCylinder("cylinder", 0.9, 0.3, 0.6, 9, 1 , scene);
+    const sensorRel = new RelativeOrientationSensor({frequency: 30});
+    sensorRel.onreading = () => cylinder.rotationQuaternion.FromArray(sensorRel.quaternion);
+    sensorRel.start();
 
 **WebGL**
 
     // Initialize sensor and update model matrix when new reading is available.
-    var mod_matrix = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
-    var sensor_abs = new AbsoluteOrientationSensor({frequency: 60});
-    sensor_abs.onreading = () => sensor_abs.populateMatrix(mod_matrix);
-    sensor_abs.start();
+    let modMatrix = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+    const sensorAbs = new AbsoluteOrientationSensor({frequency: 60});
+    sensorAbs.onreading = () => sensorAbs.populateMatrix(modMatrix);
+    sensorAbs.start();
 
     // Somewhere in rendering code, update vertex shader attribute for the model
-    gl.uniformMatrix4fv(mod_matrix_attr, false, mod_matrix);
+    gl.uniformMatrix4fv(modMatrixAttr, false, modMatrix);
 
 Orientation sensors enable various use cases, such as, immersive gaming,
 augmented and virtual reality.
@@ -265,7 +267,7 @@ modify rotation quaternion of a 3D model. The <code>model</code> is a three.js
         }
     }
 
-Whenever the device is rotated, model’s rotation quaternion would be updated
+Whenever the device is rotated, model’s rotation quaternion is updated
 thus, rotating the model in WebGL scene.
 
 <figure align="center">
@@ -274,8 +276,10 @@ thus, rotating the model in WebGL scene.
   <figcaption><b>Figure 4</b>: Sensor updates orientation of a 3D model</figcaption>
 </figure>
 
-The following example calculates the maximum velocity of a device from a linear
-acceleration sensor assuming that the device was initially still.
+The following extract from [punchmeter demo]
+(https://github.com/intel/generic-sensor-demos/tree/master/punchmeter) code
+illustrates how linear acceleration sensor can be used to calculate the maximum
+velocity of a device assuming that it was initially still.
 
 ```
    this.maxSpeed = 0;
@@ -360,17 +364,17 @@ need.
 
 ## You can help!
 
-The sensor specifications are actively developing and we need your feedback to make
-sure that this development goes right direction. Try the APIs either via enabling
-runtime [flags](#generic-sensor-api-in-chrome) in Chrome or taking part in the
-[origin trial](#motion-sensors-origin-trials) and tell whether it was good or bad
-experience. Let us know what features would be great to add there for your
-application' purposes or if there is something you would modify in the API shape.
+The sensor specifications are in active development and we need your feedback to
+make sure that this development goes in the right direction. Try the APIs either
+by enabling runtime [flags](#generic-sensor-api-in-chrome) in Chrome or taking part
+in the [origin trial](#motion-sensors-origin-trials) and share your experience.
+Let us know what features would be great to add there for your application'
+purposes or if there is something you would modify in the API shape.
 
 Please fill the [survey form](https://docs.google.com/forms/d/e/1FAIpQLSdGKPzubbOaDSgjpre9Pxw6Hr1xwYIwgZEsuUOmbs6JPwvcBQ/viewform)
 , also feel free to file [specification issues](https://github.com/w3c/sensors/issues/new)
 as well as [bugs](https://bugs.chromium.org/p/chromium/issues/entry)
-for Chrome implementation.
+for the Chrome implementation.
 
 
 <!--
